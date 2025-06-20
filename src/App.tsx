@@ -20,7 +20,7 @@ function AppContent() {
 
   useEffect(() => {
     // Initialize socket connection
-    const backendUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+    const backendUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost';
     const newSocket = io(backendUrl);
     setSocket(newSocket);
 
