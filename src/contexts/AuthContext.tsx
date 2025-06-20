@@ -35,6 +35,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:10000/api';
+
   useEffect(() => {
     // Check for stored token on app start
     const storedToken = localStorage.getItem('token');
@@ -49,7 +51,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      const response = await fetch('http://localhost/api/auth/login', {
+      const response = await fetch(`${apiBase}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +82,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const register = async (name: string, email: string, password: string, role: string): Promise<boolean> => {
     try {
-      const response = await fetch('http://localhost/api/auth/register', {
+      const response = await fetch(`${apiBase}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

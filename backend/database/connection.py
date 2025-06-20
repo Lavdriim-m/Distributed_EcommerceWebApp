@@ -13,16 +13,30 @@ def connect_to_mongo(max_retries=5, retry_delay=5):
     retries = 0
     while retries < max_retries:
         try:
-            client = MongoClient(
-                MONGO_URI,
-                serverSelectionTimeoutMS=10000,
-                replicaSet='rs0',
-                readPreference='secondaryPreferred',
-                maxPoolSize=50,
-                minPoolSize=10,
-                maxIdleTimeMS=30000,
-                waitQueueTimeoutMS=10000
-            )
+            # Check if we're using MongoDB Atlas (cloud) or local replica set
+            if 'mongodb+srv://' in MONGO_URI or 'mongodb.net' in MONGO_URI:
+                # MongoDB Atlas connection (cloud)
+                client = MongoClient(
+                    MONGO_URI,
+                    serverSelectionTimeoutMS=10000,
+                    maxPoolSize=50,
+                    minPoolSize=10,
+                    maxIdleTimeMS=30000,
+                    waitQueueTimeoutMS=10000
+                )
+            else:
+                # Local replica set connection
+                client = MongoClient(
+                    MONGO_URI,
+                    serverSelectionTimeoutMS=10000,
+                    replicaSet='rs0',
+                    readPreference='secondaryPreferred',
+                    maxPoolSize=50,
+                    minPoolSize=10,
+                    maxIdleTimeMS=30000,
+                    waitQueueTimeoutMS=10000
+                )
+            
             client.admin.command('ping')
             print("Successfully connected to MongoDB")
             return client

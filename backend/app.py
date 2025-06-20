@@ -28,15 +28,19 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
 
 # Initialize extensions
 jwt = JWTManager(app)
+
+# Get allowed origins from environment or use defaults
+ALLOWED_ORIGINS = os.getenv('ALLOWED_ORIGINS', 'http://localhost:5173').split(',')
+
 CORS(app,
-    origins=["http://localhost:5173"],
+    origins=ALLOWED_ORIGINS,
     supports_credentials=True,
     allow_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "PUT", "DELETE"]
     )
 socketio = SocketIO(
     app,
-    cors_allowed_origins=["http://localhost:5173"],
+    cors_allowed_origins=ALLOWED_ORIGINS,
     async_mode='eventlet',
     ping_timeout=60,
     ping_interval=25,
@@ -137,8 +141,8 @@ app.emit_low_stock_alert = emit_low_stock_alert
 app.emit_order_notification = emit_order_notification
 
 if __name__ == '__main__':
-    port = int(os.getenv('PORT', 5000))
+    port = int(os.getenv('PORT', 10000))
     node_id = os.getenv('NODE_ID', 'node-1')
     
     print(f"Starting {node_id} on port {port}")
-    socketio.run(app, host='0.0.0.0', port=port, debug=True)
+    socketio.run(app, host='0.0.0.0', port=port, debug=False)
